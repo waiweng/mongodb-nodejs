@@ -91,3 +91,5 @@ const main = async () => {
  
  // Run the main function, catch any errors and finally close the connection when the main function is done
  main()
+ .catch((err) => console.log(err))
+ .finally(() => client.close())
