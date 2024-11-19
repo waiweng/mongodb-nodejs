@@ -14,14 +14,19 @@ const collection_name = "accounts"
 const accountsCollection = client.db(dbname).collection(collection_name)
 
 const sampleAccount = {
- account_holder: "Linus Torvalds",
- account_id: "MDB829001337",
+ account_holder: "Elon Musk",
+ account_id: "MDB829001338",
  account_type: "checking",
  balance: 50352434,
 }
 
 // Document used as a filter for the find() method
 const documentsToFind = { balance: { $gt: 4700 } }
+
+// Document used to be updated
+const documentToUpdate = { account_id: "MDB829001338" }
+
+const update = { $inc: { balance: 100 } }
 
 // Establishes a connection to the database using the MongoClient instance
 const main = async () => {
@@ -39,6 +44,12 @@ const main = async () => {
       let docCount = accountsCollection.countDocuments(documentsToFind)
       await findAccount.forEach((doc) => console.log(doc))
       console.log(`Found ${await docCount} documents`)
+      let updateAccount = await accountsCollection.updateOne(documentToUpdate, update)
+      updateAccount.modifiedCount === 1
+      ? console.log("Updated one document")
+      : console.log("No documents updated")
+      await findAccount.forEach((doc) => console.log(doc))
+      console.log(`Found ${await docCount} documents`)      
    } catch (error) {
       console.error(error)
    } finally {
