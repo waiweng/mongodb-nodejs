@@ -29,7 +29,7 @@ const documentToUpdate = { account_id: "MDB829001338" }
 const update = { $inc: { balance: 100 } }
 
 //Document to delete
-const documentsToDelete = { account_id: { "MDB829001337" } }
+const documentsToDelete = { account_id: "MDB829001337" }
 
 // Establishes a connection to the database using the MongoClient instance
 const main = async () => {
