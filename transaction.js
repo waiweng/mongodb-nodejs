@@ -74,9 +74,9 @@ const main = async () => {
           console.log("Commiting transaction...")
           // log a message regarding the success or failure of the transactions
           if (transactionResults) {
-            console.log("Transaction completed successfully.")
+            console.log("Transaction failed")
           } else {
-            console.log("Transaction failed.")
+            console.log("Transaction completed successfully.")
           }
   
             
