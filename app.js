@@ -13,20 +13,31 @@ const dbname = "bank"
 const collection_name = "accounts"
 const accountsCollection = client.db(dbname).collection(collection_name)
 
-const sampleAccount = {
+const sampleAccount = [{
+ account_holder: "Elon Musk",
+ account_id: "MDB829001337",
+ account_type: "checking",
+ balance: 50352434
+},
+{
  account_holder: "Jeff Bezos",
+ account_id: "MDB829001338",
+ account_type: "checking",
+ balance: 10352434},
+ {
+ account_holder: "Mark Zuckerberg", 
  account_id: "MDB829001339",
  account_type: "checking",
- balance: 50352434,
-}
+ balance: 20352434}]
+
 
 // Document used as a filter for the find() method
-const documentsToFind = { balance: { $gt: 4700 } }
+const documentsToFind = { balance: { $gt: 10000000 } }
 
 // Document used to be updated
 const documentToUpdate = { account_id: "MDB829001338" }
 
-const update = { $inc: { balance: 100 } }
+const update = { $inc: { balance: 10000000 } }
 
 //Document to delete
 const documentsToDelete = { account_id: "MDB829001337" }
@@ -40,7 +51,7 @@ const main = async () => {
       const dbs = await client.db().admin().listDatabases()
       console.table(dbs.databases)
       // insertOne method is used here to insert the sampleAccount document
-      let insertAccount = await accountsCollection.insertOne(sampleAccount)
+      let insertAccount = await accountsCollection.insertMany(sampleAccount)
       console.log(`Inserted document: ${insertAccount.insertedId}`)
       // find() method is used here to find documents that match the filter
       let findAccount = accountsCollection.find(documentsToFind)
