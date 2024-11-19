@@ -14,8 +14,8 @@ const collection_name = "accounts"
 const accountsCollection = client.db(dbname).collection(collection_name)
 
 const sampleAccount = {
- account_holder: "Elon Musk",
- account_id: "MDB829001338",
+ account_holder: "Jeff Bezos",
+ account_id: "MDB829001339",
  account_type: "checking",
  balance: 50352434,
 }
@@ -28,6 +28,9 @@ const documentToUpdate = { account_id: "MDB829001338" }
 
 const update = { $inc: { balance: 100 } }
 
+//Document to delete
+const documentsToDelete = { account_id: { "MDB829001337" } }
+
 // Establishes a connection to the database using the MongoClient instance
 const main = async () => {
    try {
@@ -37,17 +40,23 @@ const main = async () => {
       const dbs = await client.db().admin().listDatabases()
       console.table(dbs.databases)
       // insertOne method is used here to insert the sampleAccount document
-      let result = await accountsCollection.insertOne(sampleAccount)
-      console.log(`Inserted document: ${result.insertedId}`)
+      let insertAccount = await accountsCollection.insertOne(sampleAccount)
+      console.log(`Inserted document: ${insertAccount.insertedId}`)
       // find() method is used here to find documents that match the filter
       let findAccount = accountsCollection.find(documentsToFind)
       let docCount = accountsCollection.countDocuments(documentsToFind)
       await findAccount.forEach((doc) => console.log(doc))
       console.log(`Found ${await docCount} documents`)
+      // update() method is used here to update the account that match the filer
       let updateAccount = await accountsCollection.updateOne(documentToUpdate, update)
       updateAccount.modifiedCount === 1
       ? console.log("Updated one document")
       : console.log("No documents updated")
+      // delete() method is used here to delete documents that match the filter
+      let deleteAccount = await accountsCollection.deleteOne(documentsToDelete)
+      deleteAccount.deletedCount > 0
+        ? console.log(`Deleted ${deleteAccount.deletedCount} documents`)
+        : console.log("No documents deleted")
       await findAccount.forEach((doc) => console.log(doc))
       console.log(`Found ${await docCount} documents`)      
    } catch (error) {
