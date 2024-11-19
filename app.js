@@ -42,6 +42,16 @@ const update = { $inc: { balance: 10000000 } }
 //Document to delete
 const documentsToDelete = { account_id: "MDB829001337" }
 
+//Move Elon Musk account to transfer account
+const transfers = client.db("bank").collection("transfers")
+
+const transferAccount = {
+    account_holder: "Elon Musk",
+    account_id: "MDB829001337",
+    account_type: "checking",
+    balance: 50352434
+   }
+
 // Establishes a connection to the database using the MongoClient instance
 const main = async () => {
    try {
@@ -69,7 +79,10 @@ const main = async () => {
         ? console.log(`Deleted ${deleteAccount.deletedCount} documents`)
         : console.log("No documents deleted")
       await findAccount.forEach((doc) => console.log(doc))
-      console.log(`Found ${await docCount} documents`)      
+      console.log(`Found ${await docCount} documents`)
+      // insert Elon Musk account to transfer collection
+      let insertTransferAccount = await transfers.insertOne(transferAccount)
+      console.log(`Inserted document: ${insertTransferAccount.insertedId}`)      
    } catch (error) {
       console.error(error)
    } finally {
