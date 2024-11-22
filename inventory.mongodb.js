@@ -21,3 +21,18 @@ db.products.insertMany(productsData);
 console.log(`${database}.${collection} has ${db.products.countDocuments()} documents.`);
 
 db.products.find({inStock: true})
+
+use("inventory");
+db.products.createIndex({inStock: 1});
+db.products.explain().find({inStock: true});
+db.products.aggregate([
+    {$match: {
+      inStock: true,
+    }},
+    {$group: {
+      _id: "$category",
+      sumProducts: {
+        $sum: 1
+      }
+    }}
+]);
