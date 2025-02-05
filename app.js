@@ -3,7 +3,7 @@ const { MongoClient } = require("mongodb")
 
 
 // Set the value of uri to your Atlas connection string.
-const uri = 'mongodb+srv://waiweng84:3dS4NAlIJLShs0TC@test-cluster1.vp6si.mongodb.net/?retryWrites=true&w=majority&appName=test-Cluster1'
+const uri = 'mongodb+srv://xxx:xxx@test-cluster1.vp6si.mongodb.net/?retryWrites=true&w=majority&appName=test-Cluster1'
 
 // Create the MongoClient instance
 const client = new MongoClient(uri)
@@ -56,7 +56,30 @@ const transferAccount = {
 const main = async () => {
    try {
       await client.connect()
-      console.log("Connected to MongoDB Atlas!")
+      console.log("Connected to the database");
+      const db = client.db(dbname);
+
+      // Drop the accounts collection if it exists
+      const accountsExists = await accountsCollection.countDocuments();
+      if (accountsExists > 0) {
+          await accountsCollection.drop();
+          console.log("Dropped accounts collection");
+      }
+
+      // Drop the transfers collection if it exists
+      const transfersCollection = db.collection("transfers");
+      const transfersExists = await transfersCollection.countDocuments();
+      if (transfersExists > 0) {
+          await transfersCollection.drop();
+          console.log("Dropped transfers collection");
+      }
+
+      // Drop the bank database if it exists
+      const dbList = await client.db().admin().listDatabases();
+      if (dbList.databases.some(db => db.name === dbname)) {
+          await db.dropDatabase();
+          console.log("Dropped bank database");
+      }
       // list out all the databases in the cluster
       const dbs = await client.db().admin().listDatabases()
       console.table(dbs.databases)
@@ -84,7 +107,8 @@ const main = async () => {
       let insertTransferAccount = await transfers.insertOne(transferAccount)
       console.log(`Inserted document: ${insertTransferAccount.insertedId}`)      
    } catch (error) {
-      console.error(error)
+      console.error(error);
+      process.exit(1);
    } finally {
       await client.close()
    }
